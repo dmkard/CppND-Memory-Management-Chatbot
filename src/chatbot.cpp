@@ -25,7 +25,6 @@ ChatBot::ChatBot(std::string filename)
     // invalidate data handles
     _chatLogic = nullptr;
     _rootNode = nullptr;
-
     // load image into heap memory
     _image = new wxBitmap(filename, wxBITMAP_TYPE_PNG);
 }
@@ -44,6 +43,74 @@ ChatBot::~ChatBot()
 
 //// STUDENT CODE
 ////
+ChatBot::ChatBot(const ChatBot &another)
+{
+  	std::cout << "ChatBot Copy Constructor" << std::endl;
+  
+  	_chatLogic = another._chatLogic;
+  	_rootNode = another._rootNode;
+  	_image = new wxBitmap(*another._image);
+}
+
+ChatBot::ChatBot(ChatBot &&another)
+{
+ 	std::cout << "ChatBot Move Constructor" << std::endl;
+
+ 	_chatLogic = another._chatLogic;
+
+  	_rootNode = another._rootNode;
+  	_image = another._image;
+    _chatLogic->SetChatbotHandle(this);
+  	another._chatLogic = nullptr;
+  	another._rootNode = nullptr;
+  	another._image = NULL;
+}
+ChatBot& ChatBot::operator=(const ChatBot& another)
+{
+  	std::cout << "ChatBot Copy Assignment Operator" << std::endl;
+  
+  	if(this == &another)
+      return *this;
+    if(_image != NULL)
+    {
+        delete _image;
+        _image = NULL;
+    }
+
+
+  	_chatLogic = another._chatLogic;
+  	_rootNode = another._rootNode;
+  	_image = new wxBitmap(*another._image);
+  	
+  	return *this;
+    
+}
+
+ChatBot& ChatBot::operator=(ChatBot&& another)
+{
+  	std::cout << "ChatBot Move Assignment Operator" << std::endl;
+    
+  	if(this == &another)
+      return *this;
+    
+    if(_image != NULL)
+    {
+        delete _image;
+        _image = NULL;
+    }
+
+  	_chatLogic = another._chatLogic;
+  	_rootNode = another._rootNode;
+  	_image = another._image;
+
+  	_chatLogic->SetChatbotHandle(this);
+
+  	another._chatLogic = nullptr;
+  	another._rootNode = nullptr;
+  	another._image = NULL;
+  
+  	return *this;
+}
 
 ////
 //// EOF STUDENT CODE
@@ -92,7 +159,6 @@ void ChatBot::SetCurrentNode(GraphNode *node)
     std::mt19937 generator(int(std::time(0)));
     std::uniform_int_distribution<int> dis(0, answers.size() - 1);
     std::string answer = answers.at(dis(generator));
-
     // send selected node answer to user
     _chatLogic->SendMessageToUser(answer);
 }

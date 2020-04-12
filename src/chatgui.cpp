@@ -118,7 +118,7 @@ ChatBotPanelDialog::ChatBotPanelDialog(wxWindow *parent, wxWindowID id)
     ////
 
     // create chat logic instance
-    _chatLogic = new ChatLogic(); 
+    _chatLogic = std::make_unique<ChatLogic>(); 
 
     // pass pointer to chatbot dialog so answers can be displayed in GUI
     _chatLogic->SetPanelDialogHandle(this);
@@ -134,8 +134,8 @@ ChatBotPanelDialog::~ChatBotPanelDialog()
 {
     //// STUDENT CODE
     ////
-
-    delete _chatLogic;
+    
+    //delete _chatLogic;
 
     ////
     //// EOF STUDENT CODE
@@ -152,7 +152,7 @@ void ChatBotPanelDialog::AddDialogItem(wxString text, bool isFromUser)
     this->FitInside(); // ask the sizer about the needed size
     this->SetScrollRate(5, 5);
     this->Layout();
-
+    
     // scroll to bottom to show newest element
     int dx, dy;
     this->GetScrollPixelsPerUnit(&dx, &dy);
@@ -207,7 +207,6 @@ ChatBotPanelDialogItem::ChatBotPanelDialogItem(wxPanel *parent, wxString text, b
     horzBoxSizer->Add(_chatBotTxt, 8, wxEXPAND | wxALL, 1);
     horzBoxSizer->Add(_chatBotImg, 2, wxEXPAND | wxALL, 1);
     this->SetSizer(horzBoxSizer);
-
     // wrap text after 150 pixels
     _chatBotTxt->Wrap(150);
 
